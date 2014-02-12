@@ -1,0 +1,213 @@
+<html>
+	<head>
+		<style>
+			#phone button{
+			    height: 50px;
+			    width: 75px;
+			}
+			#phone button span{
+			    display: block;
+			    margin-top: 5px;
+			    font-size: 10px;
+			}
+			#result{
+			    width: 225px;
+			    height: 25px;
+			    margin-left:2px;
+			}
+		</style>
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js">
+		</script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				var timeout,	lastClick = 0, longtouch;
+				$("#phone").find("button").mousedown(function(e){
+					longtouch = false;
+        				timeout = setTimeout(function() {
+			            		longtouch = true;
+        				}, 500);
+				});
+				$("#phone").find("button").mouseup(function(event){
+					ltouch = longtouch;
+	        			var d = new Date();
+					if (d.getTime() - lastClick < 3000 || lastClick == 0)
+					{
+						time = true;
+					}	
+					lastClick =  d.getTime();
+					clearTimeout(timeout);	
+        				var button_pressed = $(event.currentTarget).data("value");
+        				$("#result").val(t9($("#result").val(),button_pressed,ltouch,time));
+					time=false;
+					longtouch= false;	
+    				})
+			})
+			function t9(text,button_pressed,long,immediate){
+				val_button_pressed = parseInt(button_pressed);
+				switch(true)
+				{
+					case (val_button_pressed == 1 && !long):		
+						break;
+					case (val_button_pressed >1 && val_button_pressed < 7 && !long):
+						if ((immediate && text && (text.slice(-1).charCodeAt(0) == 97 + ((val_button_pressed-2)*3))) || (immediate && text && (text.slice(-1).charCodeAt(0) == 98 + ((val_button_pressed-2)*3))))
+						{
+							lastcharacter = text.slice(-1);
+							text = text.slice(0,-1);
+							text = text + nextChar(lastcharacter);
+						}
+						else if (immediate && text && (text.slice(-1).charCodeAt(0) == 99 + ((val_button_pressed-2)*3)))
+						{
+							lastcharacter = text.slice(-1)
+							text=text.slice(0,-1);
+							text = text + firstChar(lastcharacter);
+						}
+						else
+						{
+							text = text + currentChar(97 + ((val_button_pressed-2)*3)) ;
+						}
+						break;
+					case (val_button_pressed == 8  && !long):		
+						if ((immediate && text && (text.slice(-1)== 't')) || (immediate && text && (text.slice(-1) == 'u')))
+						{
+							lastcharacter = text.slice(-1);
+							text = text.slice(0,-1);
+							text = text + nextChar(lastcharacter);
+						}
+						else if (immediate && text && (text.slice(-1)=='v'))
+						{
+							lastcharacter = text.slice(-1);
+							text=text.slice(0,-1);
+							text = text + firstChar(lastcharacter);
+						}
+						else
+						{
+							text = text + 't' ;
+						}
+						break;
+					case (val_button_pressed == 7 || val_button_pressed == 9 && !long):
+						if (immediate && text &&
+							(
+								(val_button_pressed==7 && 
+									(text.slice(-1) == 'p'|| text.slice(-1) == 'q'|| text.slice(-1) == 'r' )
+								) 
+							||
+								(val_button_pressed == 9 && 
+									(text.slice(-1) =='w' || text.slice(-1) =='x' || text.slice(-1) =='y')
+								)
+							)
+						)
+						{
+								lastcharacter = text.slice(-1);
+								text = text.slice(0,-1);
+								text = text + nextChar(lastcharacter);
+						}
+						else if (immediate && text && (text.slice(-1) == 's' || text.slice(-1)=='z'))
+						{
+							lastcharacter = text.slice(-1)
+							text=text.slice(0,-1);
+							text = text + firstCharFour(lastcharacter);
+						}
+						else
+						{
+							if (val_button_pressed == 7)
+							{
+								text = text + 'p' ;
+							}
+							if (val_button_pressed == 9)
+							{
+								text = text + 'w' ;
+							}
+						}
+						break;
+					default:
+						text = text+button_pressed;
+						long = false;
+				}
+			return text
+		}
+		function nextChar(c) {
+		    return String.fromCharCode(c.charCodeAt(0) + 1);
+		}
+		function firstCharFour(c)
+		{
+			return String.fromCharCode(c.charCodeAt(0)-3);
+		}
+		function firstChar(c)
+		{
+			return String.fromCharCode(c.charCodeAt(0)-2);
+		}
+		function currentChar(c)
+		{
+		    return String.fromCharCode(c);
+
+		}
+	</script>
+</head>
+<body>
+<table id="phone">
+    <tr>
+        <td colspan="3">
+            <input type="text" id="result" />
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button data-value="1" class="key">1
+                <span>. , !</span>
+            </button>
+        </td>
+        <td>
+            <button data-value="2" class="key">2
+                <span>a b c</span>
+            </button>
+        </td>
+        <td>
+            <button data-value="3" class="key">3
+                <span>d e f</span>
+            </button>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button data-value="4" class="key">4
+                <span>g h i</span>
+            </button>
+        </td>
+        <td>
+            <button data-value="5" class="key">5
+                <span>j k l</span>
+            </button>
+        </td>
+        <td>
+            <button data-value="6" class="key">6
+                <span>m n o</span>
+            </button>
+        </td>
+    </tr>
+    <tr>
+        <td><button data-value="7" class="key">7
+            <span>p q r s</span>
+            </button>
+        </td>
+        <td>
+            <button data-value="8" class="key">8
+                <span>t u v</span>
+            </button>
+        </td>
+        <td>
+            <button data-value="9" class="key">9
+                <span>w x y z</span>
+            </button>
+        </td>
+    </tr>
+    <tr>
+        <td><button data-value="*" class="key">*</button></td>
+        <td><button data-value="0" class="key">0</button></td>
+        <td><button data-value="#" class="key">#</button></td>
+    </tr>
+</table>
+
+	</body>
+</html>
+
+
